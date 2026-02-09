@@ -1,0 +1,35 @@
+# ---- Python cache ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ---- Virtual environments ----
+env/
+btp_venv/
+venv/
+.env/
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+
+# ---- Binary / generated data ----
+*.npy
+*.pt
+*.pth
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+
+# ---- Documents to exclude explicitly ----
+Projectoverview
+Projectoverview.txt
+unicode_utf_understanding
+unicode_utf_understanding.txt
+U0c00.pdf
+
+
