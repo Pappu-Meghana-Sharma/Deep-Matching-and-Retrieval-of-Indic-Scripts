@@ -31,20 +31,22 @@ variations, OCR errors, and script-level structural differences.
 ## Architecture — CNN Siamese Network
 
 Both input words go through the same shared encoder:
-Input: Unicode sequence → one-hot (60 vocab, 1×60 per code point)
-↓
-Embedding layer (d=64)
-↓
-Conv1D × 2 (learns spatial patterns between code points)
-↓
-GlobalMaxPool1D (handles variable-length input)
-↓
-Dense → 250-dim word vector (z₁, z₂)
-↓
-Concatenate z₁ ⊕ z₂
-↓
-Dense (1, linear) → predicted LED (ŷ)
-Loss: MSE — L = ||ŷ − y||²  (supervised on ground truth LED)
+
+    Input: Unicode sequence → one-hot (60 vocab, 1×60 per code point)
+    ↓
+    Embedding layer (d=64)
+    ↓
+    Conv1D × 2 (learns spatial patterns between code points)
+    ↓
+    GlobalMaxPool1D (handles variable-length input)
+    ↓
+    Dense → 250-dim word vector (z₁, z₂)
+    ↓
+    Concatenate z₁ ⊕ z₂
+    ↓
+    Dense (1, linear) → predicted LED (ŷ)
+
+    Loss: MSE — L = ||ŷ − y||²  (supervised on ground truth LED)
 
 Vocabulary: 60 Telugu Unicode code points from the 0x0C00–0x0C7F 
 block, filtered to remove rare elements. Each mapped to index 0–59.
@@ -55,7 +57,7 @@ block, filtered to remove rare elements. Each mapped to index 0–59.
 
 **Phase 1 — Complete:**
 - 122 Telugu word pairs collected
-- Full preprocessing pipeline built (UTF-8 → Unicode hex → 
+- Full preprocessing pipeline built (UTF-8 → Unicode hex →
   integer indices → vocab-indexed sequences)
 - LED computed for all pairs as ground truth labels
 - LED range: 2–19, mean 7.85 — good diversity for training
@@ -79,35 +81,35 @@ block, filtered to remove rare elements. Each mapped to index 0–59.
 
 ---
 
-## Repository Structure & Pipeline Notes
-data/
-├── raw/
-│   ├── vocab_database.xlsx   # source vocabulary — edit this to add words
-│   └── new_pairs.txt         # staging file — write new pairs here before appending
-└── processed/
-├── db1_utf8_pairs.csv         # 122 raw UTF-8 Telugu word pairs
-├── db2_unicode_pairs.csv      # hex code point sequences + LED labels
-├── db2_unicode_integers.csv   # decimal integer encoding
-├── db3_processed.csv          # final vocab-indexed (x1, x2, y) dataset
-└── vocab.txt                  # 60 code points, index 0-59
-src/
-├── core/           # Levenshtein distance, Telugu Unicode validation
-└── pipelines/
-├── initialize.py   # rebuilds all processed files from scratch
-└── append.py       # adds new pairs from new_pairs.txt
+## Repository Structure & Pipeline Notes For ME
+
+    data/
+    ├── raw/
+    │   ├── vocab_database.xlsx        # source vocabulary — edit this to add words
+    │   └── new_pairs.txt              # staging file — write new pairs here before appending
+    └── processed/
+        ├── db1_utf8_pairs.csv         # 122 raw UTF-8 Telugu word pairs
+        ├── db2_unicode_pairs.csv      # hex code point sequences + LED labels
+        ├── db2_unicode_integers.csv   # decimal integer encoding
+        ├── db3_processed.csv          # final vocab-indexed (x1, x2, y) dataset
+        └── vocab.txt                  # 60 code points, index 0-59
+
+    src/
+    ├── core/                          # Levenshtein distance, Telugu Unicode validation
+    └── pipelines/
+        ├── initialize.py              # rebuilds all processed files from scratch
+        └── append.py                  # adds new pairs from new_pairs.txt
 
 **Rebuild everything from scratch** (if vocab_database.xlsx changes):
-```bash
-.\btp_venv\Scripts\python.exe -m src.pipelines.initialize
-```
 
-**Add new word pairs** (write into `data/raw/new_pairs.txt` first,  
-one pair per line, comma-separated like `అమ్మ,నాన్న`):
-```bash
-.\btp_venv\Scripts\python.exe -m src.pipelines.append
-```
+    .\btp_venv\Scripts\python.exe -m src.pipelines.initialize
 
-The append script auto-clears new_pairs.txt after running, 
+**Add new word pairs** (write into data/raw/new_pairs.txt first,
+one pair per line, comma-separated like అమ్మ,నాన్న):
+
+    .\btp_venv\Scripts\python.exe -m src.pipelines.append
+
+The append script auto-clears new_pairs.txt after running,
 deduplicates, computes LED, and updates all four processed files.
 
 ---
