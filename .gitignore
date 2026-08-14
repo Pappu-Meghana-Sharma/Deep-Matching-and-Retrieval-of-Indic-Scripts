@@ -12,6 +12,8 @@ venv/
 
 # ---- Jupyter ----
 .ipynb_checkpoints/
+SiameseArchDeepMatching (1).ipynb
+
 
 # ---- Binary / generated data ----
 *.npy
@@ -32,6 +34,16 @@ Related Work/
 Related Work
 Report_In_progress.pdf
 documents/Report_In_progress.pdf
+
+# ---- Scratch / local-only files ----
+mynotes.txt
+check_dataset.py
+verify_db3.py
+shift_vocab.py
+colab_dist_plot.png
+dataset_analysis.png
+Visual Representation,internal mach.txt
+datapoints.txt
 
 
 
